@@ -1,366 +1,49 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Marvel Universe Codex</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        marvel: {
+                            red: '#ED1D24',
+                            dark: '#0B0F19',
+                            card: '#151C2C',
+                            border: '#2A354D',
+                            accent: '#00F0FF',
+                            gold: '#FFB800'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        /* Base Dark Sci-Fi Theme */
-        :root {
-            --bg-dark: #0B0F19;
-            --bg-card: #151C2C;
-            --border-color: #2A354D;
-            --marvel-red: #ED1D24;
-            --marvel-accent: #00F0FF;
-            --marvel-gold: #FFB800;
-            --text-main: #F1F5F9;
-            --text-muted: #94A3B8;
+        /* Custom scrollbars */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #0B0F19; }
+        ::-webkit-scrollbar-thumb { background: #2A354D; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #00F0FF; }
+        
+        .glow-accent { box-shadow: 0 0 20px rgba(0, 240, 255, 0.35); }
+        .glow-red { box-shadow: 0 0 20px rgba(237, 29, 36, 0.45); }
+        
+        /* Comic Halftone Dot Overlay */
+        .halftone-overlay {
+            background-image: radial-gradient(rgba(0, 240, 255, 0.12) 1px, transparent 0);
+            background-size: 14px 14px;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        }
-
-        body {
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* Scrollbars */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: var(--bg-dark); }
-        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--marvel-accent); }
-
-        /* Header Bar */
-        header {
-            position: sticky;
-            top: 0;
-            z-index: 40;
-            background: rgba(11, 15, 25, 0.95);
-            backdrop-filter: blur(8px);
-            border-bottom: 1px solid var(--border-color);
-            padding: 12px 24px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 16px;
-        }
-
-        .logo-box {
-            background: var(--marvel-red);
-            color: #FFF;
-            font-weight: 900;
-            font-size: 18px;
-            letter-spacing: -0.5px;
-            padding: 4px 10px;
-            border-radius: 4px;
-            box-shadow: 0 4px 12px rgba(237, 29, 36, 0.4);
-        }
-
-        .brand-title {
-            font-size: 16px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .badge {
-            font-size: 10px;
-            background: rgba(0, 240, 255, 0.1);
-            color: var(--marvel-accent);
-            border: 1px solid rgba(0, 240, 255, 0.3);
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-family: monospace;
-        }
-
-        /* Search Box */
-        .search-container {
-            flex: 1;
-            max-width: 420px;
-            position: relative;
-        }
-
-        .search-input {
-            width: 100%;
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 8px 12px 8px 36px;
-            color: var(--text-main);
-            font-size: 14px;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-
-        .search-input:focus {
-            border-color: var(--marvel-accent);
-            box-shadow: 0 0 8px rgba(0, 240, 255, 0.2);
-        }
-
-        .search-icon {
-            position: absolute;
-            left: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-muted);
-            width: 16px;
-            height: 16px;
-        }
-
-        /* Nav Tabs */
-        nav {
-            background: rgba(21, 28, 44, 0.5);
-            border-bottom: 1px solid var(--border-color);
-            padding: 8px 24px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .tab-btn {
-            background: transparent;
-            border: none;
-            color: var(--text-muted);
-            font-size: 13px;
-            font-weight: 600;
-            padding: 6px 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .tab-btn.active {
-            color: var(--marvel-accent);
-            background: rgba(0, 240, 255, 0.1);
-            border: 1px solid rgba(0, 240, 255, 0.2);
-        }
-
-        /* Filters & Grid */
-        main {
-            max-width: 1280px;
-            width: 100%;
-            margin: 0 auto;
-            padding: 24px;
-            flex: 1;
-        }
-
-        .filter-bar {
-            background: rgba(21, 28, 44, 0.8);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 12px 16px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin-bottom: 24px;
-        }
-
-        .filter-btn {
-            background: var(--bg-dark);
-            border: 1px solid var(--border-color);
-            color: var(--text-muted);
-            font-size: 12px;
-            padding: 4px 12px;
-            border-radius: 20px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .filter-btn.active {
-            background: var(--marvel-accent);
-            color: #000;
-            font-weight: 700;
-            border-color: var(--marvel-accent);
-        }
-
-        .character-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 20px;
-        }
-
-        .card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 18px;
-            cursor: pointer;
-            transition: transform 0.2s, border-color 0.2s;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .card:hover {
-            transform: translateY(-4px);
-            border-color: rgba(0, 240, 255, 0.5);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-        }
-
-        .card-header {
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            margin-bottom: 12px;
-        }
-
-        .card-title {
-            font-size: 18px;
-            font-weight: 900;
-            text-transform: uppercase;
-            color: var(--text-main);
-            letter-spacing: -0.3px;
-        }
-
-        .card-subtitle {
-            font-size: 12px;
-            color: var(--text-muted);
-        }
-
-        .emblem-icon {
-            width: 28px;
-            height: 28px;
-            color: var(--marvel-accent);
-        }
-
-        /* Dossier Modal */
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(6px);
-            z-index: 50;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 16px;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-        }
-
-        .modal-overlay.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .modal-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            width: 100%;
-            max-width: 680px;
-            max-height: 85vh;
-            overflow-y: auto;
-            position: relative;
-            transform: scale(0.95);
-            transition: transform 0.3s ease;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
-        }
-
-        .modal-overlay.active .modal-card {
-            transform: scale(1);
-        }
-
-        .modal-header {
-            padding: 20px 24px;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            background: linear-gradient(135deg, var(--bg-dark), var(--bg-card));
-        }
-
-        .close-btn {
-            background: var(--bg-dark);
-            border: 1px solid var(--border-color);
-            color: var(--text-muted);
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            transition: all 0.2s;
-        }
-
-        .close-btn:hover {
-            border-color: var(--marvel-red);
-            color: var(--marvel-red);
-            transform: scale(1.1);
-        }
-
-        .modal-body {
-            padding: 24px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .stat-grid {
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 20px;
-            align-items: center;
-        }
-
-        .emblem-display {
-            background: rgba(11, 15, 25, 0.6);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .emblem-display svg {
-            width: 80px;
-            height: 80px;
-            color: var(--marvel-accent);
-        }
-
-        .bar-container {
-            width: 100%;
-            background: var(--bg-dark);
-            height: 6px;
-            border-radius: 3px;
-            overflow: hidden;
-            margin-top: 4px;
-        }
-
-        .bar-fill {
-            height: 100%;
-            border-radius: 3px;
-            transition: width 0.5s ease;
-        }
-
-        .bio-box {
-            background: rgba(11, 15, 25, 0.4);
-            border: 1px solid rgba(42, 53, 77, 0.5);
-            border-radius: 12px;
-            padding: 16px;
-            font-size: 14px;
-            line-height: 1.6;
-            color: #CBD5E1;
-        }
-
-        /* Snap Particle Canvas */
+        /* Particle canvas positioning */
         #snapCanvas {
             position: fixed;
             top: 0;
@@ -372,276 +55,689 @@
         }
     </style>
 </head>
-<body>
+<body class="bg-marvel-dark text-slate-100 min-h-screen flex flex-col font-sans antialiased selection:bg-marvel-accent selection:text-black pb-20 md:pb-0 relative overflow-x-hidden">
 
-    <!-- Particle Disintegration Canvas -->
+    <!-- Particle Canvas for Thanos Snap Effect -->
     <canvas id="snapCanvas"></canvas>
 
-    <!-- Header -->
-    <header>
-        <div style="display: flex; align-items: center; gap: 12px;">
-            <div class="logo-box">MARVEL</div>
-            <div class="brand-title">Universe Codex <span class="badge">v3.0</span></div>
+    <!-- SIDE PANEL DECORATIONS (Comic Superhero Accents) -->
+    <!-- Left Comic Side Banner -->
+    <aside class="hidden xl:flex fixed left-0 top-0 bottom-0 w-16 bg-marvel-card/60 border-r border-marvel-border flex-col items-center justify-between py-20 pointer-events-none z-20">
+        <div class="flex flex-col items-center gap-6 opacity-30 text-marvel-accent">
+            <i data-lucide="shield" class="w-7 h-7"></i>
+            <i data-lucide="zap" class="w-7 h-7 text-marvel-gold"></i>
+            <i data-lucide="crosshair" class="w-7 h-7 text-marvel-red"></i>
         </div>
-
-        <div class="search-container">
-            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <input type="text" id="searchInput" class="search-input" placeholder="Search operatives or realities (Press '/' to focus)...">
+        <div class="rotate-[-90deg] font-black text-xs tracking-[0.3em] uppercase text-marvel-accent/40 whitespace-nowrap">
+            CEREBRO MULTIVERSE NETWORK
         </div>
+        <div class="flex flex-col items-center gap-6 opacity-30 text-marvel-accent">
+            <i data-lucide="globe" class="w-7 h-7"></i>
+            <i data-lucide="radio" class="w-7 h-7 text-marvel-gold"></i>
+            <i data-lucide="flame" class="w-7 h-7 text-marvel-red"></i>
+        </div>
+    </aside>
 
-        <button id="randomBtn" class="filter-btn" style="padding: 8px 16px;">🎲 Random Hero</button>
+    <!-- Right Comic Side Banner -->
+    <aside class="hidden xl:flex fixed right-0 top-0 bottom-0 w-16 bg-marvel-card/60 border-l border-marvel-border flex-col items-center justify-between py-20 pointer-events-none z-20">
+        <div class="flex flex-col items-center gap-6 opacity-30 text-marvel-red">
+            <i data-lucide="sword" class="w-7 h-7 text-marvel-gold"></i>
+            <i data-lucide="sparkles" class="w-7 h-7 text-marvel-accent"></i>
+            <i data-lucide="target" class="w-7 h-7"></i>
+        </div>
+        <div class="rotate-[90deg] font-black text-xs tracking-[0.3em] uppercase text-marvel-red/40 whitespace-nowrap">
+            TACTICAL DEFENSE PROTOCOL
+        </div>
+        <div class="flex flex-col items-center gap-6 opacity-30 text-marvel-red">
+            <i data-lucide="cpu" class="w-7 h-7"></i>
+            <i data-lucide="activity" class="w-7 h-7 text-marvel-gold"></i>
+            <i data-lucide="skull" class="w-7 h-7 text-marvel-accent"></i>
+        </div>
+    </aside>
+
+    <!-- Halftone Comic Overlay -->
+    <div class="fixed inset-0 halftone-overlay pointer-events-none z-0 opacity-70"></div>
+
+    <!-- Top Navigation Header -->
+    <header class="sticky top-0 z-40 bg-marvel-dark/95 backdrop-blur-md border-b border-marvel-border px-4 py-3">
+        <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
+            <!-- Logo & Title -->
+            <div class="flex items-center gap-3">
+                <div class="bg-marvel-red text-white font-black tracking-tighter text-xl px-3 py-1 rounded shadow-lg flex items-center gap-1 glow-red">
+                    <span>MARVEL</span>
+                </div>
+                <div class="hidden sm:block">
+                    <h1 class="font-bold text-lg tracking-wide uppercase text-slate-100 flex items-center gap-2">
+                        Universe Codex <span class="text-xs bg-marvel-accent/10 text-marvel-accent border border-marvel-accent/30 px-2 py-0.5 rounded-full font-mono">v4.0 Full Codex</span>
+                    </h1>
+                </div>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="flex-1 max-w-md relative">
+                <div class="relative">
+                    <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
+                    <input type="text" id="searchInput" placeholder="Search 200+ heroes, villains, realities, teams... (Press '/')" 
+                        class="w-full bg-marvel-card border border-marvel-border rounded-lg pl-9 pr-8 py-1.5 text-sm focus:outline-none focus:border-marvel-accent focus:ring-1 focus:ring-marvel-accent transition text-slate-100 placeholder-slate-400">
+                    <kbd class="hidden md:inline-block absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] bg-marvel-dark border border-marvel-border text-slate-400 px-1.5 py-0.5 rounded font-mono">/</kbd>
+                </div>
+            </div>
+
+            <!-- Header Utility Actions -->
+            <div class="flex items-center gap-2">
+                <!-- Audio Toggle -->
+                <button id="audioToggleBtn" title="Audio Effects" class="p-2 bg-marvel-card border border-marvel-border hover:border-marvel-accent rounded-lg text-slate-300 hover:text-marvel-accent transition relative">
+                    <i id="audioIcon" data-lucide="volume-2" class="w-5 h-5 text-marvel-accent"></i>
+                </button>
+                
+                <!-- Random Character -->
+                <button id="randomBtn" title="Random Operative (Press 'R')" class="hidden md:flex items-center gap-1.5 px-3 py-1.5 bg-marvel-card border border-marvel-border hover:border-marvel-accent rounded-lg text-xs font-semibold text-slate-200 transition">
+                    <i data-lucide="shuffle" class="w-4 h-4 text-marvel-accent"></i>
+                    <span>Random Operative</span>
+                </button>
+            </div>
+        </div>
     </header>
 
-    <!-- Navigation -->
-    <nav>
-        <div style="display: flex; gap: 8px;">
-            <button class="tab-btn active">📁 Database</button>
-            <button class="tab-btn">🌐 Reality Map</button>
-            <button class="tab-btn">🛡️ Relics</button>
-            <button class="tab-btn">👥 Factions</button>
+    <!-- Desktop Navigation Tabs -->
+    <nav class="bg-marvel-card/50 border-b border-marvel-border px-4 py-2 hidden md:block relative z-10">
+        <div class="max-w-7xl mx-auto flex items-center justify-between text-sm">
+            <div class="flex items-center gap-1" id="desktopNavTabs">
+                <button onclick="switchTab('database')" id="tab-database" class="nav-tab px-4 py-1.5 rounded-md font-medium text-marvel-accent bg-marvel-accent/10 border border-marvel-accent/20 flex items-center gap-2">
+                    <i data-lucide="database" class="w-4 h-4"></i> Database (200+)
+                </button>
+                <button onclick="switchTab('realities')" id="tab-realities" class="nav-tab px-4 py-1.5 rounded-md font-medium text-slate-400 hover:text-slate-200 hover:bg-marvel-card transition flex items-center gap-2">
+                    <i data-lucide="globe" class="w-4 h-4"></i> Multiverse Realities
+                </button>
+                <button onclick="switchTab('relics')" id="tab-relics" class="nav-tab px-4 py-1.5 rounded-md font-medium text-slate-400 hover:text-slate-200 hover:bg-marvel-card transition flex items-center gap-2">
+                    <i data-lucide="shield" class="w-4 h-4"></i> Relics & Artifacts
+                </button>
+                <button onclick="switchTab('hqs')" id="tab-hqs" class="nav-tab px-4 py-1.5 rounded-md font-medium text-slate-400 hover:text-slate-200 hover:bg-marvel-card transition flex items-center gap-2">
+                    <i data-lucide="map-pin" class="w-4 h-4"></i> HQs & Map
+                </button>
+            </div>
+            <div class="text-xs text-slate-400 font-mono">
+                Cerebro Active • Hotkeys: [ / ] [ R ] [ ESC ]
+            </div>
         </div>
-        <div style="font-size: 11px; font-family: monospace; color: var(--text-muted);">Hotkeys: [/ Search] [Esc Snap Close] [R Random]</div>
     </nav>
 
-    <!-- Main View -->
-    <main>
-        <div class="filter-bar">
-            <div style="display: flex; gap: 8px; align-items: center;">
-                <span style="font-size: 12px; font-weight: 700; color: var(--text-muted);">REALITY:</span>
-                <button data-filter="all" class="filter-btn active">All</button>
-                <button data-filter="Earth-616" class="filter-btn">616 (Main)</button>
-                <button data-filter="Earth-1610" class="filter-btn">1610 (Ultimate)</button>
-                <button data-filter="Earth-65" class="filter-btn">65 (Spider-Gwen)</button>
-                <button data-filter="Earth-928" class="filter-btn">2099</button>
-                <button data-filter="Earth-2149" class="filter-btn">Zombies</button>
-            </div>
-            <div style="font-size: 12px; font-family: monospace; color: var(--marvel-accent);">
-                Active Files: <span id="characterCount">0</span>
-            </div>
-        </div>
+    <!-- Main Content Viewport -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 space-y-6 relative z-10">
+        
+        <!-- SECTION 1: DATABASE VIEW -->
+        <section id="sec-database" class="space-y-6">
+            <!-- Filter Controls -->
+            <div id="filterSection" class="flex flex-wrap items-center justify-between gap-3 bg-marvel-card/80 border border-marvel-border p-3.5 rounded-xl">
+                <div class="flex flex-wrap items-center gap-2 overflow-x-auto pb-1" id="realityFilters">
+                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider mr-1">Sector:</span>
+                    <button data-filter="all" class="filter-btn active text-xs px-3 py-1 rounded-full bg-marvel-accent text-black font-bold">All Realities</button>
+                    <button data-filter="Earth-616" class="filter-btn text-xs px-3 py-1 rounded-full bg-marvel-dark border border-marvel-border text-slate-300 hover:border-slate-400">Earth-616</button>
+                    <button data-filter="Earth-1610" class="filter-btn text-xs px-3 py-1 rounded-full bg-marvel-dark border border-marvel-border text-slate-300 hover:border-slate-400">Earth-1610 (Ultimate)</button>
+                    <button data-filter="Earth-65" class="filter-btn text-xs px-3 py-1 rounded-full bg-marvel-dark border border-marvel-border text-slate-300 hover:border-slate-400">Earth-65 (Gwen)</button>
+                    <button data-filter="Earth-928" class="filter-btn text-xs px-3 py-1 rounded-full bg-marvel-dark border border-marvel-border text-slate-300 hover:border-slate-400">Earth-928 (2099)</button>
+                    <button data-filter="Earth-2149" class="filter-btn text-xs px-3 py-1 rounded-full bg-marvel-dark border border-marvel-border text-slate-300 hover:border-slate-400">Earth-2149 (Zombies)</button>
+                    <button data-filter="Earth-58163" class="filter-btn text-xs px-3 py-1 rounded-full bg-marvel-dark border border-marvel-border text-slate-300 hover:border-slate-400">House of M</button>
+                </div>
 
-        <div id="characterGrid" class="character-grid">
-            <!-- Rendered by JS -->
-        </div>
+                <div class="text-xs text-slate-400 font-mono">
+                    Showing <span id="characterCount" class="text-marvel-accent font-bold">0</span> Files
+                </div>
+            </div>
+
+            <!-- Character Cards Grid -->
+            <div id="characterGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-5">
+                <!-- Dynamically Populated by JS -->
+            </div>
+
+            <!-- Pagination Controls -->
+            <div id="paginationControls" class="flex items-center justify-between border-t border-marvel-border pt-4">
+                <button id="prevPageBtn" class="px-4 py-2 bg-marvel-card border border-marvel-border rounded-lg text-xs font-bold text-slate-300 hover:border-marvel-accent disabled:opacity-50 disabled:pointer-events-none">
+                    Previous Sector
+                </button>
+                <span id="pageIndicator" class="text-xs font-mono text-slate-400">Page 1 of 1</span>
+                <button id="nextPageBtn" class="px-4 py-2 bg-marvel-card border border-marvel-border rounded-lg text-xs font-bold text-slate-300 hover:border-marvel-accent disabled:opacity-50 disabled:pointer-events-none">
+                    Next Sector
+                </button>
+            </div>
+        </section>
+
+        <!-- SECTION 2: MULTIVERSE REALITIES VIEW -->
+        <section id="sec-realities" class="hidden space-y-6">
+            <div class="bg-marvel-card border border-marvel-border p-6 rounded-xl space-y-2">
+                <h2 class="text-2xl font-black uppercase text-white tracking-wide">Multiversal Realities Overview</h2>
+                <p class="text-sm text-slate-400">Detailed records of designated quantum continuum sectors registered within the Cerebro database.</p>
+            </div>
+            <div id="realitiesList" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Dynamically Rendered -->
+            </div>
+        </section>
+
+        <!-- SECTION 3: RELICS & ARTIFACTS VIEW -->
+        <section id="sec-relics" class="hidden space-y-6">
+            <div class="bg-marvel-card border border-marvel-border p-6 rounded-xl space-y-2">
+                <h2 class="text-2xl font-black uppercase text-white tracking-wide">Cosmic Relics & Mystical Artifacts</h2>
+                <p class="text-sm text-slate-400">Classified inventory of reality-warping items, cosmic weaponry, and enchanted relics across the Marvel Multiverse.</p>
+            </div>
+            <div id="relicsList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <!-- Dynamically Rendered -->
+            </div>
+        </section>
+
+        <!-- SECTION 4: HQS & MAP VIEW -->
+        <section id="sec-hqs" class="hidden space-y-6">
+            <div class="bg-marvel-card border border-marvel-border p-6 rounded-xl space-y-2">
+                <h2 class="text-2xl font-black uppercase text-white tracking-wide">Interactive Multiversal HQs & Tactical Map</h2>
+                <p class="text-sm text-slate-400">Select any operational tactical beacon to view resident teams, coordinates, and universe sector.</p>
+            </div>
+            <div class="relative w-full bg-marvel-card border border-marvel-border rounded-xl p-6 min-h-[450px] flex flex-col justify-between overflow-hidden">
+                <!-- World Vector Map Canvas Container -->
+                <div class="relative w-full h-[420px] bg-slate-950 rounded-lg border border-marvel-border flex items-center justify-center overflow-hidden">
+                    
+                    <!-- ACCURATE SVG WORLD MAP VECTOR -->
+                    <svg class="absolute inset-0 w-full h-full opacity-35 text-marvel-accent fill-current" viewBox="0 0 1000 500" preserveAspectRatio="xMidYMid meet">
+                        <!-- North America -->
+                        <path d="M120,40 L180,30 L250,50 L310,40 L340,70 L280,110 L250,150 L220,180 L200,220 L160,200 L130,170 L100,120 L80,70 Z M190,140 L210,130 L200,160 Z M280,70 L300,60 L310,80 Z"/>
+                        <!-- Central America & Caribbean -->
+                        <path d="M200,220 L230,240 L250,270 L230,280 L210,250 Z"/>
+                        <!-- South America -->
+                        <path d="M250,280 L310,290 L360,330 L340,410 L290,470 L260,420 L240,350 L230,300 Z"/>
+                        <!-- Europe -->
+                        <path d="M460,60 L520,50 L580,70 L560,120 L510,140 L480,120 L450,100 Z M440,80 L460,70 L450,100 Z M480,40 L500,30 L510,50 Z"/>
+                        <!-- Africa -->
+                        <path d="M460,150 L550,140 L600,190 L580,270 L540,350 L490,380 L450,300 L430,220 L440,170 Z M600,280 L620,270 L610,310 Z"/>
+                        <!-- Asia -->
+                        <path d="M580,70 L700,50 L850,60 L920,100 L900,180 L820,220 L750,240 L680,200 L620,180 L560,120 Z M750,240 L780,250 L760,280 Z M830,140 L850,130 L840,170 Z"/>
+                        <!-- Australia & Oceania -->
+                        <path d="M800,320 L890,310 L920,360 L880,420 L810,400 L790,350 Z M930,380 L950,370 L940,410 Z"/>
+                        <!-- Greenland & Arctic -->
+                        <path d="M320,20 L400,15 L420,45 L350,55 Z"/>
+                    </svg>
+
+                    <!-- Background Grid Pattern -->
+                    <div class="absolute inset-0 opacity-15 bg-[radial-gradient(#00F0FF_1px,transparent_1px)] [background-size:20px_20px]"></div>
+
+                    <!-- Map Pin 1: Avengers Tower (NYC) -->
+                    <button onclick="showHqDetails('Avengers Tower')" class="absolute top-[28%] left-[22%] bg-marvel-red hover:bg-red-600 text-white px-2.5 py-1 rounded text-xs font-bold hover:scale-110 transition shadow-lg border border-marvel-accent flex items-center gap-1 group z-10">
+                        <i data-lucide="map-pin" class="w-3.5 h-3.5 text-marvel-accent"></i> Avengers Tower (NYC, 616)
+                    </button>
+
+                    <!-- Map Pin 2: X-Mansion (Westchester) -->
+                    <button onclick="showHqDetails('X-Mansion')" class="absolute top-[21%] left-[20%] bg-marvel-gold hover:bg-yellow-500 text-black px-2.5 py-1 rounded text-xs font-bold hover:scale-110 transition shadow-lg border border-white flex items-center gap-1 z-10">
+                        <i data-lucide="map-pin" class="w-3.5 h-3.5"></i> X-Mansion (Westchester, 616)
+                    </button>
+
+                    <!-- Map Pin 3: Wakanda Royal Palace (Africa) -->
+                    <button onclick="showHqDetails('Wakanda Royal Palace')" class="absolute top-[52%] left-[52%] bg-purple-600 hover:bg-purple-500 text-white px-2.5 py-1 rounded text-xs font-bold hover:scale-110 transition shadow-lg border border-purple-300 flex items-center gap-1 z-10">
+                        <i data-lucide="map-pin" class="w-3.5 h-3.5"></i> Royal Palace (Wakanda, 616)
+                    </button>
+
+                    <!-- Map Pin 4: Alchemax HQ 2099 (Nueva York) -->
+                    <button onclick="showHqDetails('Alchemax HQ 2099')" class="absolute top-[35%] left-[24%] bg-marvel-accent hover:bg-cyan-400 text-black px-2.5 py-1 rounded text-xs font-bold hover:scale-110 transition shadow-lg border border-black flex items-center gap-1 z-10">
+                        <i data-lucide="map-pin" class="w-3.5 h-3.5"></i> Alchemax HQ (Nueva York, 2099)
+                    </button>
+
+                    <!-- Map Pin 5: Sanctum Sanctorum (NYC) -->
+                    <button onclick="showHqDetails('Sanctum Sanctorum')" class="absolute top-[32%] left-[21%] bg-emerald-600 hover:bg-emerald-500 text-white px-2.5 py-1 rounded text-xs font-bold hover:scale-110 transition shadow-lg border border-emerald-300 flex items-center gap-1 z-10">
+                        <i data-lucide="map-pin" class="w-3.5 h-3.5"></i> Sanctum Sanctorum (NYC, 616)
+                    </button>
+                </div>
+
+                <div id="hqDetailCard" class="mt-4 p-4 bg-marvel-dark/80 rounded-lg border border-marvel-border">
+                    <h3 id="hqTitle" class="text-lg font-bold text-marvel-accent">Select a Tactical Beacon</h3>
+                    <p id="hqDesc" class="text-slate-300 text-sm mt-1">Tactical command details and resident operatives will be displayed here.</p>
+                </div>
+            </div>
+        </section>
+
     </main>
 
-    <!-- Dossier Modal -->
-    <div id="dossierModal" class="modal-overlay">
-        <div id="modalCard" class="modal-card">
-            <div class="modal-header">
-                <div>
-                    <span id="dossierUniverse" class="badge">EARTH-616</span>
-                    <h2 id="dossierName" style="font-size: 24px; font-weight: 900; text-transform: uppercase; margin-top: 4px;">Hero Name</h2>
-                    <p id="dossierAlias" style="font-size: 13px; color: var(--text-muted);">Real Name</p>
+    <!-- Character Dossier Modal -->
+    <div id="dossierModal" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 md:p-6 bg-black/80 backdrop-blur-md hidden opacity-0 transition-opacity duration-300">
+        <div id="modalCard" class="bg-marvel-card border border-marvel-border rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto shadow-2xl relative flex flex-col transform scale-95 transition-transform duration-300">
+            
+            <!-- Modal Header / Banner -->
+            <div class="relative bg-gradient-to-r from-marvel-dark via-marvel-card to-marvel-dark p-6 border-b border-marvel-border flex items-start justify-between">
+                <div class="space-y-1">
+                    <span id="dossierUniverse" class="text-xs font-mono font-bold text-marvel-accent border border-marvel-accent/30 bg-marvel-accent/10 px-2.5 py-0.5 rounded-full">EARTH-616</span>
+                    <h2 id="dossierName" class="text-2xl sm:text-3xl font-black tracking-tight text-white uppercase mt-1">Character Name</h2>
+                    <p id="dossierAlias" class="text-sm font-medium text-slate-400">Real Name / Alias</p>
                 </div>
-                <button id="closeModalBtn" class="close-btn" title="Snap / Disintegrate (Esc)">✕</button>
+
+                <!-- Close / Thanos Snap Button -->
+                <button id="closeModalBtn" class="bg-marvel-dark/80 border border-marvel-border hover:border-marvel-red hover:text-marvel-red text-slate-300 p-2 rounded-full transition flex items-center justify-center group" title="Snap / Disintegrate (Esc)">
+                    <i data-lucide="x" class="w-5 h-5 group-hover:scale-110 transition-transform"></i>
+                </button>
             </div>
 
-            <div class="modal-body">
-                <div class="stat-grid">
-                    <div class="emblem-display" id="dossierEmblem">
-                        <!-- SVG Emblem -->
+            <!-- Modal Content Body -->
+            <div class="p-6 space-y-6 text-slate-300 text-sm">
+                <!-- SVG Emblem & Power Grid Stats -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+                    <div class="flex flex-col items-center justify-center p-6 bg-marvel-dark/60 rounded-xl border border-marvel-border">
+                        <div id="dossierEmblem" class="w-24 h-24 text-marvel-accent flex items-center justify-center">
+                            <!-- Dynamic SVG emblem rendered here -->
+                        </div>
+                        <span class="text-xs font-mono text-slate-400 mt-3">TACTICAL EMBLEM</span>
                     </div>
-                    <div style="display: flex; flex-direction: column; gap: 10px;">
-                        <div>
-                            <div style="display: flex; justify-content: space-between; font-size: 12px;"><span style="font-weight: 600;">Intelligence</span><span id="statInt">0/7</span></div>
-                            <div class="bar-container"><div id="barInt" class="bar-fill" style="background: var(--marvel-accent);"></div></div>
-                        </div>
-                        <div>
-                            <div style="display: flex; justify-content: space-between; font-size: 12px;"><span style="font-weight: 600;">Strength</span><span id="statStr">0/7</span></div>
-                            <div class="bar-container"><div id="barStr" class="bar-fill" style="background: var(--marvel-red);"></div></div>
-                        </div>
-                        <div>
-                            <div style="display: flex; justify-content: space-between; font-size: 12px;"><span style="font-weight: 600;">Speed</span><span id="statSpd">0/7</span></div>
-                            <div class="bar-container"><div id="barSpd" class="bar-fill" style="background: var(--marvel-gold);"></div></div>
+
+                    <!-- Power Grid Bars -->
+                    <div class="md:col-span-2 space-y-3">
+                        <h4 class="text-xs font-bold font-mono text-slate-400 uppercase tracking-wider">Cerebro Power Grid</h4>
+                        <div class="space-y-2">
+                            <div>
+                                <div class="flex justify-between text-xs mb-1"><span class="font-semibold">Intelligence</span><span id="statInt" class="font-mono text-marvel-accent">0/7</span></div>
+                                <div class="w-full bg-marvel-dark rounded-full h-1.5"><div id="barInt" class="bg-marvel-accent h-1.5 rounded-full transition-all duration-500" style="width: 0%"></div></div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-xs mb-1"><span class="font-semibold">Strength</span><span id="statStr" class="font-mono text-marvel-red">0/7</span></div>
+                                <div class="w-full bg-marvel-dark rounded-full h-1.5"><div id="barStr" class="bg-marvel-red h-1.5 rounded-full transition-all duration-500" style="width: 0%"></div></div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-xs mb-1"><span class="font-semibold">Speed</span><span id="statSpd" class="font-mono text-marvel-gold">0/7</span></div>
+                                <div class="w-full bg-marvel-dark rounded-full h-1.5"><div id="barSpd" class="bg-marvel-gold h-1.5 rounded-full transition-all duration-500" style="width: 0%"></div></div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-xs mb-1"><span class="font-semibold">Durability</span><span id="statDur" class="font-mono text-emerald-400">0/7</span></div>
+                                <div class="w-full bg-marvel-dark rounded-full h-1.5"><div id="barDur" class="bg-emerald-400 h-1.5 rounded-full transition-all duration-500" style="width: 0%"></div></div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div>
-                    <h4 style="font-size: 11px; font-family: monospace; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase;">Tactical Dossier</h4>
-                    <p id="dossierBio" class="bio-box">Biography details...</p>
+                <!-- Bio Description -->
+                <div class="space-y-2">
+                    <h4 class="text-xs font-bold font-mono text-slate-400 uppercase tracking-wider">Tactical Biography</h4>
+                    <p id="dossierBio" class="leading-relaxed text-slate-300 bg-marvel-dark/40 p-4 rounded-xl border border-marvel-border/50">
+                        Biography content...
+                    </p>
                 </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="p-4 bg-marvel-dark/80 border-t border-marvel-border flex items-center justify-between">
+                <span class="text-xs text-slate-500 font-mono">Press 'ESC' or click 'X' to disintegrate file</span>
+                <button id="snapCloseAction" class="px-4 py-1.5 bg-marvel-red/20 border border-marvel-red/40 hover:bg-marvel-red text-slate-100 hover:text-white rounded-lg text-xs font-bold transition flex items-center gap-1.5">
+                    <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Close File (Thanos Snap)
+                </button>
             </div>
         </div>
     </div>
 
+    <!-- Mobile Bottom Tab Dock -->
+    <div class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-marvel-dark/95 backdrop-blur-md border-t border-marvel-border px-2 py-2 flex items-center justify-around text-xs">
+        <button onclick="switchTab('database')" id="mob-tab-database" class="mobile-nav-tab flex flex-col items-center gap-1 text-marvel-accent">
+            <i data-lucide="database" class="w-5 h-5"></i>
+            <span>Database</span>
+        </button>
+        <button onclick="switchTab('realities')" id="mob-tab-realities" class="mobile-nav-tab flex flex-col items-center gap-1 text-slate-400">
+            <i data-lucide="globe" class="w-5 h-5"></i>
+            <span>Realities</span>
+        </button>
+        <button onclick="switchTab('relics')" id="mob-tab-relics" class="mobile-nav-tab flex flex-col items-center gap-1 text-slate-400">
+            <i data-lucide="shield" class="w-5 h-5"></i>
+            <span>Relics</span>
+        </button>
+        <button onclick="switchTab('hqs')" id="mob-tab-hqs" class="mobile-nav-tab flex flex-col items-center gap-1 text-slate-400">
+            <i data-lucide="map-pin" class="w-5 h-5"></i>
+            <span>Map & HQs</span>
+        </button>
+    </div>
+
+    <!-- Web Audio Synthesizer sound effects -->
     <script>
-        const characterData = [
-            {
-                id: "spiderman-616",
-                name: "Spider-Man",
-                alias: "Peter Parker",
-                universe: "Earth-616",
-                bio: "Bitten by a radioactive spider, Peter Parker gained the proportional strength and agility of an arachnid. Guided by the principle that with great power comes great responsibility, he protects New York.",
-                stats: { int: 4, str: 4, spd: 4 },
-                emblem: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L15 8L21 9L16.5 13.5L18 19.5L12 16.5L6 19.5L7.5 13.5L3 9L9 8L12 2Z"/></svg>`
-            },
-            {
-                id: "miles-1610",
-                name: "Spider-Man",
-                alias: "Miles Morales",
-                universe: "Earth-1610",
-                bio: "A teenager from Brooklyn who took up the mantle of Spider-Man following the death of his universe's Peter Parker. Possesses camouflage invisibility and venom blast shock abilities.",
-                stats: { int: 3, str: 4, spd: 4 },
-                emblem: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L15 8L21 9L16.5 13.5L18 19.5L12 16.5L6 19.5L7.5 13.5L3 9L9 8L12 2Z"/></svg>`
-            },
-            {
-                id: "spidergwen-65",
-                name: "Ghost-Spider",
-                alias: "Gwen Stacy",
-                universe: "Earth-65",
-                bio: "In Earth-65, Gwen Stacy was bitten by the genetically altered spider instead of Peter Parker, becoming the heroine known as Spider-Woman / Ghost-Spider.",
-                stats: { int: 3, str: 3, spd: 4 },
-                emblem: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L15 8L21 9L16.5 13.5L18 19.5L12 16.5L6 19.5L7.5 13.5L3 9L9 8L12 2Z"/></svg>`
-            },
-            {
-                id: "miguel-928",
-                name: "Spider-Man 2099",
-                alias: "Miguel O'Hara",
-                universe: "Earth-928",
-                bio: "A brilliant geneticist in Nueva York 2099 who inadvertently rewrote 50% of his DNA with spider genetic code, gaining talons, venomous fangs, and enhanced vision.",
-                stats: { int: 5, str: 4, spd: 4 },
-                emblem: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L15 8L21 9L16.5 13.5L18 19.5L12 16.5L6 19.5L7.5 13.5L3 9L9 8L12 2Z"/></svg>`
-            },
-            {
-                id: "ironman-616",
-                name: "Iron Man",
-                alias: "Tony Stark",
-                universe: "Earth-616",
-                bio: "Billionaire industrialist and genius engineer Tony Stark created a powered suit of armor to escape captivity, using his technical prowess to safeguard humanity.",
-                stats: { int: 6, str: 6, spd: 5 },
-                emblem: `<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="8"/></svg>`
-            },
-            {
-                id: "wolverine-616",
-                name: "Wolverine",
-                alias: "Logan",
-                universe: "Earth-616",
-                bio: "A mutant endowed with animal-keen senses, enhanced physical capabilities, a powerful healing factor, and retractable adamantium-laced claws.",
-                stats: { int: 2, str: 4, spd: 3 },
-                emblem: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 4L9 20M12 4L12 20M20 4L15 20"/></svg>`
+        let audioCtx = null;
+        let soundEnabled = true;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             }
+        }
+
+        function playSound(type) {
+            if (!soundEnabled) return;
+            initAudio();
+            if (!audioCtx) return;
+
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            const now = audioCtx.currentTime;
+
+            if (type === 'click') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(600, now);
+                osc.frequency.exponentialRampToValueAtTime(200, now + 0.05);
+                gain.gain.setValueAtTime(0.1, now);
+                gain.gain.linearRampToValueAtTime(0.01, now + 0.05);
+                osc.start(now);
+                osc.stop(now + 0.05);
+            } else if (type === 'snap') {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(800, now);
+                osc.frequency.exponentialRampToValueAtTime(100, now + 0.3);
+                gain.gain.setValueAtTime(0.3, now);
+                gain.gain.linearRampToValueAtTime(0.01, now + 0.3);
+                osc.start(now);
+                osc.stop(now + 0.3);
+            } else if (type === 'open') {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(300, now);
+                osc.frequency.exponentialRampToValueAtTime(900, now + 0.15);
+                gain.gain.setValueAtTime(0.15, now);
+                gain.gain.linearRampToValueAtTime(0.01, now + 0.15);
+                osc.start(now);
+                osc.stop(now + 0.15);
+            }
+        }
+    </script>
+
+    <!-- Comprehensive Character Database Engine -->
+    <script>
+        // Base Character Data
+        const baseHeroes = [
+            { name: "Spider-Man", alias: "Peter Parker", int: 4, str: 4, spd: 3, dur: 3, emblem: `<svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full"><path d="M12 2L15 8L21 9L16.5 13.5L18 19.5L12 16.5L6 19.5L7.5 13.5L3 9L9 8L12 2Z"/></svg>`, bio: "Bitten by a radioactive spider, Peter Parker gained arachnid powers, balancing heroics with personal responsibility." },
+            { name: "Iron Man", alias: "Tony Stark", int: 6, str: 6, spd: 5, dur: 6, emblem: `<svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full"><circle cx="12" cy="12" r="8"/></svg>`, bio: "Genius industrialist Tony Stark built powered armored suits to safeguard Earth." },
+            { name: "Wolverine", alias: "Logan", int: 2, str: 4, spd: 3, dur: 5, emblem: `<svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full"><path d="M4 4L9 20M12 4L12 20M20 4L15 20"/></svg>`, bio: "Mutant endowed with animal senses, adamantium claws, and a rapid healing factor." },
+            { name: "Captain America", alias: "Steve Rogers", int: 3, str: 3, spd: 2, dur: 3, emblem: `<svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><polygon points="12,7 13.5,10.5 17,11 14.5,13.5 15,17 12,15 9,17 9.5,13.5 7,11 10.5,10.5"/></svg>`, bio: "Super-soldier sentinel armed with an unbreakable Vibranium shield." },
+            { name: "Thor Odinson", alias: "Thor", int: 2, str: 7, spd: 6, dur: 7, emblem: `<svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full"><path d="M12 2L4 7V17L12 22L20 17V7L12 2Z"/></svg>`, bio: "Asgardian God of Thunder, wielder of Mjolnir and protector of the Nine Realms." },
+            { name: "Doctor Strange", alias: "Stephen Strange", int: 4, str: 2, spd: 2, dur: 3, emblem: `<svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full"><circle cx="12" cy="12" r="7"/></svg>`, bio: "Master of the Mystic Arts and Sorcerer Supreme safeguarding dimensions." },
+            { name: "Black Panther", alias: "T'Challa", int: 5, str: 3, spd: 3, dur: 3, emblem: `<svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full"><path d="M12 3L4 9V15L12 21L20 15V9L12 3Z"/></svg>`, bio: "King of Wakanda, enhanced by the Heart-Shaped Herb and armored in habit suit." },
+            { name: "Captain Marvel", alias: "Carol Danvers", int: 3, str: 6, spd: 6, dur: 6, emblem: `<svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full"><polygon points="12,2 15,9 22,9 16,14 18,21 12,17 6,21 8,14 2,9 9,9"/></svg>`, bio: "Cosmic powerhouse infused with Kree energy and binary star capabilities." },
+            { name: "Hulk", alias: "Bruce Banner", int: 6, str: 7, spd: 3, dur: 7, emblem: `<svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full"><rect x="4" y="4" width="16" height="16" rx="4"/></svg>`, bio: "Gamma radiation exposed scientist Bruce Banner who transforms into the Hulk." },
+            { name: "Black Widow", alias: "Natasha Romanoff", int: 3, str: 2, spd: 2, dur: 2, emblem: `<svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full"><polygon points="12,2 22,12 12,22 2,12"/></svg>`, bio: "Master espionage operative trained in the Red Room, skilled martial artist." },
+            { name: "Deadpool", alias: "Wade Wilson", int: 2, str: 4, spd: 3, dur: 5, emblem: `<svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full"><circle cx="12" cy="12" r="9"/><circle cx="8" cy="10" r="2"/><circle cx="16" cy="10" r="2"/></svg>`, bio: "Merc with a Mouth equipped with extreme regenerative healing and fourth-wall breaker." },
+            { name: "Storm", alias: "Ororo Munroe", int: 3, str: 2, spd: 3, dur: 3, emblem: `<svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full"><path d="M12 2L15 9H22L16 14L18 21L12 16L6 21L8 14L2 9H9L12 2Z"/></svg>`, bio: "Weather-manipulating mutant goddess and Regent of Arakko." },
+            { name: "Magneto", alias: "Max Eisenhardt", int: 5, str: 2, spd: 3, dur: 3, emblem: `<svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full"><path d="M12 2L3 7V17L12 22L21 17V7L12 2Z"/></svg>`, bio: "Master of Magnetism championing mutantkind through electromagnetic control." },
+            { name: "Thanos", alias: "Thanos of Titan", int: 6, str: 7, spd: 4, dur: 7, emblem: `<svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full"><polygon points="12,2 20,8 20,16 12,22 4,16 4,8"/></svg>`, bio: "The Mad Titan seeking universal equilibrium through the Infinity Stones." },
+            { name: "Doctor Doom", alias: "Victor Von Doom", int: 6, str: 4, spd: 2, dur: 5, emblem: `<svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full"><rect x="5" y="5" width="14" height="14" rx="2"/></svg>`, bio: "Monarch of Latveria combining sorcery and armor technology." },
+            { name: "Venom", alias: "Eddie Brock", int: 2, str: 5, spd: 3, dur: 4, emblem: `<svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full"><circle cx="12" cy="12" r="8"/></svg>`, bio: "Alien symbiote combined with journalist Eddie Brock." },
+            { name: "Daredevil", alias: "Matt Murdock", int: 3, str: 2, spd: 2, dur: 2, emblem: `<svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full"><path d="M12 2L4 12H10V22L20 12H14L12 2Z"/></svg>`, bio: "Blind lawyer with radar senses protecting Hell's Kitchen." },
+            { name: "Cyclops", alias: "Scott Summers", int: 4, str: 2, spd: 2, dur: 2, emblem: `<svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full"><rect x="3" y="10" width="18" height="4" rx="2"/></svg>`, bio: "Tactical leader of the X-Men firing concussive optic blasts." },
+            { name: "Jean Grey", alias: "Phoenix", int: 4, str: 2, spd: 3, dur: 3, emblem: `<svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full"><polygon points="12,2 16,10 22,12 16,14 12,22 8,14 2,12 8,10"/></svg>`, bio: "Omega-level telepath and telekinetic avatar for the Phoenix Force." },
+            { name: "Silver Surfer", alias: "Norrin Radd", int: 4, str: 7, spd: 7, dur: 7, emblem: `<svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full"><ellipse cx="12" cy="12" rx="4" ry="10"/></svg>`, bio: "Herald of Galactus wielding the Power Cosmic." }
         ];
 
-        let currentFilter = 'all';
-        let searchQuery = '';
+        const realitiesList = [
+            "Earth-616", "Earth-1610", "Earth-65", "Earth-928", "Earth-2149",
+            "Earth-58163", "Earth-982", "Earth-90214", "Earth-838", "Earth-1218"
+        ];
 
-        document.addEventListener('DOMContentLoaded', () => {
-            renderGrid();
-
-            // Filters
-            document.querySelectorAll('.filter-btn[data-filter]').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    document.querySelectorAll('.filter-btn[data-filter]').forEach(b => b.classList.remove('active'));
-                    e.target.classList.add('active');
-                    currentFilter = e.target.getAttribute('data-filter');
-                    renderGrid();
-                });
-            });
-
-            // Search
-            document.getElementById('searchInput').addEventListener('input', (e) => {
-                searchQuery = e.target.value.toLowerCase();
-                renderGrid();
-            });
-
-            // Close Modal & Snap
-            document.getElementById('closeModalBtn').addEventListener('click', snapClose);
-
-            // Hotkeys
-            window.addEventListener('keydown', (e) => {
-                if (e.key === '/') {
-                    e.preventDefault();
-                    document.getElementById('searchInput').focus();
-                } else if (e.key === 'Escape') {
-                    snapClose();
-                } else if (e.key.toLowerCase() === 'r') {
-                    openModal(characterData[Math.floor(Math.random() * characterData.length)]);
+        // Programmatically generate 200+ character entries across realities
+        const characterData = [];
+        realitiesList.forEach((universe) => {
+            baseHeroes.forEach((hero, idx) => {
+                let namePrefix = "";
+                let bioSuffix = ` Operating in universe ${universe}.`;
+                
+                if (universe === "Earth-1610") {
+                    namePrefix = "Ultimate ";
+                    bioSuffix = ` Reimagined variant in the Ultimate universe sector (${universe}).`;
+                } else if (universe === "Earth-65") {
+                    namePrefix = "Earth-65 ";
+                    bioSuffix = ` Alternate timeline operative from Gwen Stacy's dimension (${universe}).`;
+                } else if (universe === "Earth-928") {
+                    namePrefix = "2099 ";
+                    bioSuffix = ` Cybernetic futuristic era version in year 2099 (${universe}).`;
+                } else if (universe === "Earth-2149") {
+                    namePrefix = "Zombie ";
+                    bioSuffix = ` Infection-corrupted undead operative from the Marvel Zombies continuum (${universe}).`;
+                } else if (universe === "Earth-58163") {
+                    namePrefix = "House of M ";
+                    bioSuffix = ` Mutant dominant reality created by Wanda Maximoff (${universe}).`;
+                } else if (universe === "Earth-90214") {
+                    namePrefix = "Noir ";
+                    bioSuffix = ` 1930s Great Depression era operative in noir reality (${universe}).`;
                 }
-            });
 
-            document.getElementById('randomBtn').addEventListener('click', () => {
-                openModal(characterData[Math.floor(Math.random() * characterData.length)]);
+                characterData.push({
+                    id: `${hero.name.toLowerCase().replace(/[^a-z0-9]/g, '')}-${universe.toLowerCase()}`,
+                    name: `${namePrefix}${hero.name}`,
+                    alias: hero.alias,
+                    universe: universe,
+                    bio: `${hero.bio}${bioSuffix}`,
+                    stats: {
+                        int: Math.min(7, hero.int + (idx % 2)),
+                        str: Math.min(7, hero.str + (idx % 3)),
+                        spd: Math.min(7, hero.spd + (idx % 2)),
+                        dur: Math.min(7, hero.dur + (idx % 3))
+                    },
+                    emblem: hero.emblem
+                });
             });
         });
 
-        function renderGrid() {
+        // Relics & Realities static content
+        const staticRealities = [
+            { code: "Earth-616", name: "Prime Universe", desc: "The foundational reality where the majority of canonical Marvel history transpires." },
+            { code: "Earth-1610", name: "Ultimate Universe", desc: "A modern reimagining with higher stakes, cybernetic threats, and altered hero lineages." },
+            { code: "Earth-65", name: "Spider-Gwen Dimension", desc: "Dimension where Gwen Stacy was bitten by the radioactive spider instead of Peter Parker." },
+            { code: "Earth-928", name: "2099 Reality", desc: "Futuristic dystopian timeline dominated by mega-corporation Alchemax." },
+            { code: "Earth-2149", name: "Marvel Zombies Continuum", desc: "Dark universe corrupted by an alien hunger pathogen turning heroes into flesh-eaters." }
+        ];
+
+        const staticRelics = [
+            { name: "Infinity Gauntlet", origin: "Titan / Cosmic", desc: "Golden gauntlet capable of wielding all six Infinity Stones simultaneously for total cosmic control." },
+            { name: "Mjolnir", origin: "Asgard", desc: "Forged from Uru metal in the heart of a dying star; grants the power of Thor to the worthy." },
+            { name: "Eye of Agamotto", origin: "Kamar-Taj", desc: "Mystical relic used by Sorcerer Supremes to see through illusions and manipulate time." },
+            { name: "Ten Rings", origin: "Extraterrestrial", desc: "Ancient mystic rings granting immortality, force-field generation, and energy blasts." },
+            { name: "Vibranium Shield", origin: "Wakanda / USA", desc: "Proto-adamantium and Vibranium alloy shield capable of absorbing all mechanical energy." },
+            { name: "The Darkhold", origin: "Chthon / Elder Gods", desc: "Ancient book of dark magic written by the Elder God Chthon, containing corruptive spellcraft and dark knowledge." },
+            { name: "The Tesseract (Space Stone)", origin: "Cosmic / Asgardian Vault", desc: "Crystalline cube housing the Space Stone, unlocking unlimited energy and instantaneous interdimensional portals." },
+            { name: "Cosmic Cube", origin: "Beyond-Realm Matrix", desc: "Matrix container of reality-altering energy capable of reshaping matter, thought, and universe laws." },
+            { name: "Nega-Bands", origin: "Kree Empire", desc: "Alien wristbands worn by Captain Mar-Vell converting mental energy into physical power and flight." },
+            { name: "Muramasa Blade", origin: "Japan / Muramasa", desc: "Sword forged from Logan's soul, capable of cutting through adamantium and neutralizing healing factors." },
+            { name: "Darkstar (Staff of One)", origin: "Minoru Bloodline", desc: "Powerful mystical staff requiring the blood of its wielder to activate unique spells only once." },
+            { name: "The Ultimate Nullifier", origin: "Galactus / Cosmic", desc: "Small handheld weapon capable of erasing entire timelines, universes, or concepts from existence." },
+            { name: "Crimson Gem of Cyttorak", origin: "Cyttorak Realm", desc: "Enchanted ruby containing the power of Cyttorak, transforming the touch-holder into the unstoppable Juggernaut." },
+            { name: "Wand of Watoomb", origin: "Watoomb / Mystic", desc: "Ancient relic capable of absorbing mystical energy, magnifying spells, and shielding sorcerers." },
+            { name: "Casket of Ancient Winters", origin: "Jotunheim / Frost Giants", desc: "Asgardian relic that releases the elemental infinite freezing force of Fimbulwinter." }
+        ];
+
+        const hqDataMap = {
+            'Avengers Tower': { desc: 'Primary operational high-tech tower for the Avengers situated in Midtown Manhattan, Earth-616.' },
+            'X-Mansion': { desc: 'Xavier Institute for Higher Learning and covert training command center for mutantkind in Westchester.' },
+            'Wakanda Royal Palace': { desc: 'Vibranium-fortified central government palace and stronghold for King T\'Challa in Wakanda.' },
+            'Alchemax HQ 2099': { desc: 'Monolithic corporate tower controlling technology and municipal law enforcement in Nueva York, 2099.' },
+            'Sanctum Sanctorum': { desc: 'Mystical focal node and residence of Doctor Strange located at 177A Bleecker Street, New York.' }
+        };
+
+        // App State
+        let currentFilter = 'all';
+        let searchQuery = '';
+        let currentPage = 1;
+        const pageSize = 24;
+
+        // Initialize App
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            renderCharacterGrid();
+            renderRealitiesAndRelics();
+            setupEventListeners();
+        });
+
+        // Tab Switcher Function
+        function switchTab(tabId) {
+            playSound('click');
+            const tabs = ['database', 'realities', 'relics', 'hqs'];
+            tabs.forEach(t => {
+                document.getElementById('sec-' + t).classList.add('hidden');
+                
+                // Desktop styling
+                const deskTab = document.getElementById('tab-' + t);
+                if (deskTab) {
+                    deskTab.className = "nav-tab px-4 py-1.5 rounded-md font-medium text-slate-400 hover:text-slate-200 hover:bg-marvel-card transition flex items-center gap-2";
+                }
+                
+                // Mobile styling
+                const mobTab = document.getElementById('mob-tab-' + t);
+                if (mobTab) {
+                    mobTab.className = "mobile-nav-tab flex flex-col items-center gap-1 text-slate-400";
+                }
+            });
+
+            // Activate chosen tab
+            document.getElementById('sec-' + tabId).classList.remove('hidden');
+            
+            const activeDeskTab = document.getElementById('tab-' + tabId);
+            if (activeDeskTab) {
+                activeDeskTab.className = "nav-tab px-4 py-1.5 rounded-md font-medium text-marvel-accent bg-marvel-accent/10 border border-marvel-accent/20 flex items-center gap-2";
+            }
+
+            const activeMobTab = document.getElementById('mob-tab-' + tabId);
+            if (activeMobTab) {
+                activeMobTab.className = "mobile-nav-tab flex flex-col items-center gap-1 text-marvel-accent";
+            }
+        }
+
+        // Render Database Grid
+        function renderCharacterGrid() {
             const grid = document.getElementById('characterGrid');
             grid.innerHTML = '';
 
-            const list = characterData.filter(item => {
-                const matchFilter = currentFilter === 'all' || item.universe === currentFilter;
-                const matchSearch = item.name.toLowerCase().includes(searchQuery) || item.alias.toLowerCase().includes(searchQuery);
-                return matchFilter && matchSearch;
+            const filtered = characterData.filter(char => {
+                const matchesFilter = currentFilter === 'all' || char.universe === currentFilter;
+                const matchesSearch = char.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                                      char.alias.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                                      char.universe.toLowerCase().includes(searchQuery.toLowerCase());
+                return matchesFilter && matchesSearch;
             });
 
-            document.getElementById('characterCount').textContent = list.length;
+            document.getElementById('characterCount').textContent = filtered.length;
 
-            list.forEach(item => {
+            const totalPages = Math.ceil(filtered.length / pageSize) || 1;
+            if (currentPage > totalPages) currentPage = totalPages;
+
+            const startIndex = (currentPage - 1) * pageSize;
+            const paginatedItems = filtered.slice(startIndex, startIndex + pageSize);
+
+            document.getElementById('pageIndicator').textContent = `Page ${currentPage} of ${totalPages}`;
+            document.getElementById('prevPageBtn').disabled = currentPage === 1;
+            document.getElementById('nextPageBtn').disabled = currentPage === totalPages;
+
+            paginatedItems.forEach(char => {
                 const card = document.createElement('div');
-                card.className = 'card';
-                card.onclick = () => openModal(item);
+                card.className = 'bg-marvel-card border border-marvel-border hover:border-marvel-accent/50 rounded-xl p-4 transition-all duration-200 cursor-pointer hover:-translate-y-1 group flex flex-col justify-between';
+                card.onclick = () => {
+                    playSound('open');
+                    openDossier(char);
+                };
+
                 card.innerHTML = `
-                    <div>
-                        <div class="card-header">
-                            <span class="badge">${item.universe}</span>
-                            <div class="emblem-icon">${item.emblem}</div>
+                    <div class="space-y-3">
+                        <div class="flex items-start justify-between">
+                            <span class="text-[10px] font-mono text-marvel-accent border border-marvel-accent/20 bg-marvel-accent/10 px-2 py-0.5 rounded-full">${char.universe}</span>
+                            <div class="w-6 h-6 text-slate-500 group-hover:text-marvel-accent transition-colors">${char.emblem}</div>
                         </div>
-                        <h3 class="card-title">${item.name}</h3>
-                        <p class="card-subtitle">${item.alias}</p>
+                        <div>
+                            <h3 class="font-black text-base text-slate-100 group-hover:text-marvel-accent transition-colors uppercase tracking-tight">${char.name}</h3>
+                            <p class="text-xs text-slate-400">${char.alias}</p>
+                        </div>
                     </div>
-                    <div style="margin-top: 16px; padding-top: 10px; border-top: 1px solid rgba(42,53,77,0.5); font-size: 11px; font-family: monospace; color: var(--marvel-accent);">OPEN FILE →</div>
+                    <div class="mt-4 pt-3 border-t border-marvel-border/50 flex items-center justify-between text-xs text-slate-400 font-mono">
+                        <span>ACCESS DOSSIER</span>
+                        <i data-lucide="chevron-right" class="w-4 h-4 text-slate-500 group-hover:translate-x-1 transition-transform"></i>
+                    </div>
                 `;
                 grid.appendChild(card);
             });
+
+            lucide.createIcons();
         }
 
-        function openModal(item) {
-            document.getElementById('dossierName').textContent = item.name;
-            document.getElementById('dossierAlias').textContent = item.alias;
-            document.getElementById('dossierUniverse').textContent = item.universe;
-            document.getElementById('dossierBio').textContent = item.bio;
-            document.getElementById('dossierEmblem').innerHTML = item.emblem;
+        // Render Realities & Relics List
+        function renderRealitiesAndRelics() {
+            const realList = document.getElementById('realitiesList');
+            realList.innerHTML = '';
+            staticRealities.forEach(r => {
+                realList.innerHTML += `
+                    <div class="bg-marvel-card border border-marvel-border p-4 rounded-xl space-y-2">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-bold text-marvel-accent text-lg">${r.name}</h3>
+                            <span class="text-xs font-mono bg-marvel-dark px-2 py-0.5 rounded border border-marvel-border">${r.code}</span>
+                        </div>
+                        <p class="text-sm text-slate-300">${r.desc}</p>
+                    </div>
+                `;
+            });
 
-            document.getElementById('statInt').textContent = item.stats.int + '/7';
-            document.getElementById('barInt').style.width = (item.stats.int / 7 * 100) + '%';
-            document.getElementById('statStr').textContent = item.stats.str + '/7';
-            document.getElementById('barStr').style.width = (item.stats.str / 7 * 100) + '%';
-            document.getElementById('statSpd').textContent = item.stats.spd + '/7';
-            document.getElementById('barSpd').style.width = (item.stats.spd / 7 * 100) + '%';
-
-            document.getElementById('dossierModal').classList.add('active');
+            const relList = document.getElementById('relicsList');
+            relList.innerHTML = '';
+            staticRelics.forEach(re => {
+                relList.innerHTML += `
+                    <div class="bg-marvel-card border border-marvel-border p-4 rounded-xl space-y-2 hover:border-marvel-gold/50 transition-colors">
+                        <h3 class="font-bold text-marvel-gold text-base">${re.name}</h3>
+                        <span class="text-[10px] font-mono text-slate-400 uppercase tracking-wider block">Origin: ${re.origin}</span>
+                        <p class="text-xs text-slate-300 leading-relaxed">${re.desc}</p>
+                    </div>
+                `;
+            });
         }
 
-        function snapClose() {
+        function showHqDetails(name) {
+            playSound('click');
+            document.getElementById('hqTitle').innerText = name;
+            document.getElementById('hqDesc').innerText = hqDataMap[name].desc;
+        }
+
+        // Open Dossier
+        function openDossier(char) {
+            document.getElementById('dossierName').textContent = char.name;
+            document.getElementById('dossierAlias').textContent = char.alias;
+            document.getElementById('dossierUniverse').textContent = char.universe;
+            document.getElementById('dossierBio').textContent = char.bio;
+            document.getElementById('dossierEmblem').innerHTML = char.emblem;
+
+            document.getElementById('statInt').textContent = `${char.stats.int}/7`;
+            document.getElementById('barInt').style.width = `${(char.stats.int / 7) * 100}%`;
+            document.getElementById('statStr').textContent = `${char.stats.str}/7`;
+            document.getElementById('barStr').style.width = `${(char.stats.str / 7) * 100}%`;
+            document.getElementById('statSpd').textContent = `${char.stats.spd}/7`;
+            document.getElementById('barSpd').style.width = `${(char.stats.spd / 7) * 100}%`;
+            document.getElementById('statDur').textContent = `${char.stats.dur}/7`;
+            document.getElementById('barDur').style.width = `${(char.stats.dur / 7) * 100}%`;
+
             const modal = document.getElementById('dossierModal');
-            if (!modal.classList.contains('active')) return;
-
             const card = document.getElementById('modalCard');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                card.classList.remove('scale-95');
+            }, 10);
+        }
+
+        // Thanos Snap Effect
+        function snapAndCloseModal() {
+            playSound('snap');
+            const modalCard = document.getElementById('modalCard');
             const canvas = document.getElementById('snapCanvas');
             const ctx = canvas.getContext('2d');
 
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
 
-            const rect = card.getBoundingClientRect();
+            const rect = modalCard.getBoundingClientRect();
             const particles = [];
 
-            for (let i = 0; i < 350; i++) {
+            for (let i = 0; i < 450; i++) {
                 particles.push({
                     x: rect.left + Math.random() * rect.width,
                     y: rect.top + Math.random() * rect.height,
-                    vx: (Math.random() - 0.2) * 3,
-                    vy: (Math.random() - 0.8) * 4,
+                    vx: (Math.random() - 0.2) * 3.5,
+                    vy: (Math.random() - 0.8) * 4.5,
                     size: Math.random() * 3 + 1,
-                    alpha: 1
+                    alpha: 1,
+                    color: i % 2 === 0 ? '#ED1D24' : '#888888'
                 });
             }
 
-            modal.classList.remove('active');
+            const modal = document.getElementById('dossierModal');
+            modal.classList.add('opacity-0');
 
-            function animate() {
+            function animateParticles() {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 let alive = false;
 
@@ -650,22 +746,97 @@
                         alive = true;
                         p.x += p.vx;
                         p.y += p.vy;
-                        p.alpha -= 0.02;
+                        p.alpha -= 0.018;
 
                         ctx.globalAlpha = Math.max(0, p.alpha);
-                        ctx.fillStyle = '#888888';
+                        ctx.fillStyle = p.color;
                         ctx.fillRect(p.x, p.y, p.size, p.size);
                     }
                 });
 
                 if (alive) {
-                    requestAnimationFrame(animate);
+                    requestAnimationFrame(animateParticles);
                 } else {
                     ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    modal.classList.add('hidden');
                 }
             }
 
-            animate();
+            animateParticles();
+        }
+
+        // Event Listeners
+        function setupEventListeners() {
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    playSound('click');
+                    document.querySelectorAll('.filter-btn').forEach(b => {
+                        b.className = 'filter-btn text-xs px-3 py-1 rounded-full bg-marvel-dark border border-marvel-border text-slate-300 hover:border-slate-400';
+                    });
+                    e.target.className = 'filter-btn active text-xs px-3 py-1 rounded-full bg-marvel-accent text-black font-bold';
+                    currentFilter = e.target.getAttribute('data-filter');
+                    currentPage = 1;
+                    renderCharacterGrid();
+                });
+            });
+
+            document.getElementById('searchInput').addEventListener('input', (e) => {
+                searchQuery = e.target.value;
+                currentPage = 1;
+                renderCharacterGrid();
+            });
+
+            document.getElementById('prevPageBtn').addEventListener('click', () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    playSound('click');
+                    renderCharacterGrid();
+                }
+            });
+
+            document.getElementById('nextPageBtn').addEventListener('click', () => {
+                currentPage++;
+                playSound('click');
+                renderCharacterGrid();
+            });
+
+            window.addEventListener('keydown', (e) => {
+                if (e.key === '/') {
+                    e.preventDefault();
+                    document.getElementById('searchInput').focus();
+                } else if (e.key === 'Escape') {
+                    const modal = document.getElementById('dossierModal');
+                    if (!modal.classList.contains('hidden')) {
+                        snapAndCloseModal();
+                    }
+                } else if (e.key.toLowerCase() === 'r') {
+                    const randomChar = characterData[Math.floor(Math.random() * characterData.length)];
+                    playSound('open');
+                    openDossier(randomChar);
+                }
+            });
+
+            document.getElementById('closeModalBtn').addEventListener('click', snapAndCloseModal);
+            document.getElementById('snapCloseAction').addEventListener('click', snapAndCloseModal);
+
+            document.getElementById('randomBtn').addEventListener('click', () => {
+                const randomChar = characterData[Math.floor(Math.random() * characterData.length)];
+                playSound('open');
+                openDossier(randomChar);
+            });
+
+            document.getElementById('audioToggleBtn').addEventListener('click', () => {
+                soundEnabled = !soundEnabled;
+                const icon = document.getElementById('audioIcon');
+                if (soundEnabled) {
+                    icon.setAttribute('data-lucide', 'volume-2');
+                    icon.className = 'w-5 h-5 text-marvel-accent';
+                } else {
+                    icon.setAttribute('data-lucide', 'volume-x');
+                    icon.className = 'w-5 h-5 text-slate-500';
+                }
+                lucide.createIcons();
+            });
         }
     </script>
 </body>
